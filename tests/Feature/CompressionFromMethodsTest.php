@@ -11,7 +11,7 @@ final class AssetsCompressorTest extends TestCase
 {
 
     /**
-     * @testdox AssetsCompressor\AssetsCompressor
+     * @testdox Compressor
      * @covers ::run()
      */
     public function testRun()
@@ -25,26 +25,6 @@ final class AssetsCompressorTest extends TestCase
         $this->assertFileExists(__DIR__.'/CompressorTest.min.js', 'Produkcyjny plik CSS istnieje.');
         $this->assertFileExists(__DIR__.'/CompressorTest.css', 'Deweloperski plik CSS istnieje.');
         $this->assertFileExists(__DIR__.'/CompressorTest.min.css', 'Produkcyjny plik CSS istnieje.');
-    }
-
-    /**
-     * @testdox Check if include/exclude patterns work propertly
-     * @covers ::buildFilesList
-     */
-    public function testBuildFilesList()
-    {
-
-        // Patterns to check against
-        $patterns = [
-            
-        ];
-
-        // Reflection to expose protected method
-        $method = new ReflectionMethod(AssetsCompressor::class, 'buildFilesList');
-        $method->setAccessible(true);
-
-        // Get method result
-        $result = $method->invoke(new Foo, $patterns);
     }
 
     /**
