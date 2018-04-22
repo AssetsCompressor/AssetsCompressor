@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @name    AssetsCompressor/AssetsCompressor
+ * @link    https://github.com/AssetsCompressor/AssetsCompressor
+ * @author  Artur Stępień
+ */
+
 namespace AssetsCompressor;
 
 use Exception;
@@ -52,6 +58,7 @@ class AssetsCompressor
      * Create compressor instance.
      *
      * @param   string  $config_path    Absolute configuration file path.
+     * @param   bool    $versioning     Save minified output files with version tag?
      */
     public function __construct(string $config_path = '',
                                 bool $versioning = true)
@@ -151,16 +158,15 @@ class AssetsCompressor
         }
 
         // If versioning is enabled, store hashes
-        if( $this->versioning AND !empty($this->hashes) ) {
+        if ($this->versioning AND ! empty($this->hashes)) {
 
             // If there is no hashes file, place one in root directory
-            if( empty($this->path_hashes) ) {
+            if (empty($this->path_hashes)) {
                 $this->path_hashes = $this->path_root.'/'.'busters.json';
             }
 
             file_put_contents($this->path_hashes, json_encode($this->hashes));
         }
-
     }
 
     /**
@@ -195,9 +201,9 @@ class AssetsCompressor
             $path_minified = $dir.'/'.$filename.'.min.';
 
             // If file shuld be versioned, add a hash
-            if( $this->versioning ) {
-                $hash = hash('crc32b', $buffer);
-                $path_minified .= $hash.'.';
+            if ($this->versioning) {
+                $hash                             = hash('crc32b', $buffer);
+                $path_minified                    .= $hash.'.';
                 $this->hashes[$path_uncompressed] = $hash;
             }
 
