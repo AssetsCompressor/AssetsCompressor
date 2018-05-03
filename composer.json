@@ -14,15 +14,31 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.0",
         "symfony/yaml": "~3.4|~4.0",
         "tubalmartin/cssmin": "^4.1",
-        "matthiasmullie/minify": "^1.3"
+        "matthiasmullie/minify": "^1.3",
+        "symfony/console": "^3.4"
+    },
+    "support": {
+        "issues": "https://github.com/AssetsCompressor/AssetsCompressor/issues"
     },
     "autoload": {
         "psr-4": { "AssetsCompressor\\": "src" },
         "exclude-from-classmap": [
             "/tests/"
         ]
+    },
+    "bin": [
+        "bin/assets-compressor"
+    ],
+    "config": {
+        "platform": {
+            "php": "7.1.0"
+        },
+        "optimize-autoloader": true
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
     }
 }
