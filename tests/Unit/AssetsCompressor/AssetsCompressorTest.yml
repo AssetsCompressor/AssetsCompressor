@@ -1,0 +1,5 @@
+/.output/script.js:
+    - /*.js
+/.output/stylesheet.css:
+    - /*.css
+    - !/stylesheetB.css
