@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @name    AssetsCompressor/AssetsCompressor
  * @link    https://github.com/AssetsCompressor/AssetsCompressor
@@ -9,7 +8,7 @@
 namespace AssetsCompressor;
 
 use Exception;
-use MatthiasMullie\Minify\JS AS JSProcessor;
+use MatthiasMullie\Minify\JS as JSProcessor;
 use Symfony\Component\Yaml\Yaml;
 use tubalmartin\CssMin\Minifier as CSSProcessor;
 
@@ -18,7 +17,6 @@ use tubalmartin\CssMin\Minifier as CSSProcessor;
  */
 class AssetsCompressor
 {
-
     /**
      * Library version
      */
@@ -58,16 +56,15 @@ class AssetsCompressor
      * 
      * @var bool
      */
-    protected $versioning = true;
+    protected $hashing = true;
 
     /**
      * Create compressor instance.
      *
      * @param   string  $config_path    Absolute configuration file path.
-     * @param   bool    $versioning     Save minified output files with version tag?
+     * @param   bool    $hashing        Save minified output files with version tag?
      */
-    public function __construct(string $config_path = '',
-                                bool $versioning = true)
+    public function __construct(string $config_path = '', bool $hashing = true)
     {
 
         // If configuration file was provided
@@ -76,15 +73,17 @@ class AssetsCompressor
         }
 
         // Should minified files be versioned?
-        $this->versioning = $versioning;
+        $this->hashing = $hashing;
     }
 
     /**
      * Load library configuration YAML from file $config_file.
      *
      * @param   string  $config_file    Absolute configuration file path.
+     *
+     * @return  self
      */
-    public function loadConfigurationFile(string $config_file): array
+    public function loadConfigurationFile(string $config_file): self
     {
 
         // If configuration file doesn't exists, throw exception
@@ -95,6 +94,8 @@ class AssetsCompressor
         // Load configuration and store it as array
         $this->path_root = pathinfo($config_file, PATHINFO_DIRNAME);
         $this->config    = Yaml::parse(file_get_contents($config_file));
+
+        return $this;
     }
 
     /**
@@ -102,10 +103,14 @@ class AssetsCompressor
      *
      * @param   array   $output_file    Entry point (output file path)
      * @param   array   $patterns       File patterns (glob() patterns)
+     *
+     * @return  self
      */
-    public function addEntryPoint(array $output_file, array $patterns)
+    public function addEntryPoint(array $output_file, array $patterns): self
     {
         $this->config[$output_file] = $patterns;
+
+        return $this;
     }
 
     /**
@@ -115,26 +120,50 @@ class AssetsCompressor
      * If youre using addEntryPoint() method, set root directory using this method.
      * 
      * @param   string  $path   Absolute file path
+     *
+     * @return  self
      */
-    public function setRootDirectory(string $path)
+    public function setRootDirectory(string $path): self
     {
         $this->path_root = $path;
+
+        return $this;
     }
 
     /**
      * Set the file path where entry points hashes should be stored.
      *
      * @param   string  $path   Absolute file path
+     *
+     * @return  self
      */
-    public function setHashesFilePath(string $path)
+    public function setHashesFilePath(string $path): self
     {
         $this->path_hashes = $path;
+
+        return $this;
+    }
+
+    /**
+     * Should output filenames contain content hash?
+     * 
+     * @param   bool    $state  Output files hashing state
+     *
+     * @return  self
+     */
+    public function setHashing(bool $state = true): self
+    {
+        $this->hashing = $state;
+
+        return $this;
     }
 
     /**
      * Run assets compressor
+     *
+     * @return  self
      */
-    public function run()
+    public function run(): self
     {
 
         // If there are no files in configuration, throw exception
@@ -164,7 +193,7 @@ class AssetsCompressor
         }
 
         // If versioning is enabled, store hashes
-        if ($this->versioning AND ! empty($this->hashes)) {
+        if ($this->hashing AND ! empty($this->hashes)) {
 
             // If there is no hashes file, place one in root directory
             if (empty($this->path_hashes)) {
@@ -173,6 +202,8 @@ class AssetsCompressor
 
             file_put_contents($this->path_hashes, json_encode($this->hashes));
         }
+
+        return $this;
     }
 
     /**
@@ -184,6 +215,7 @@ class AssetsCompressor
      */
     protected function processEntry(string $output_path, array $patterns)
     {
+
         // Extension (file type)
         $ext = strtolower(pathinfo($output_path, PATHINFO_EXTENSION));
 
@@ -207,7 +239,7 @@ class AssetsCompressor
             $path_minified = $dir.'/'.$filename.'.min.';
 
             // If file shuld be versioned, add a hash
-            if ($this->versioning) {
+            if ($this->hashing) {
                 $hash                             = hash('crc32b', $buffer);
                 $path_minified                    .= $hash.'.';
                 $this->hashes[$path_uncompressed] = $hash;
