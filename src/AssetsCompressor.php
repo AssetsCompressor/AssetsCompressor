@@ -18,6 +18,12 @@ use tubalmartin\CssMin\Minifier as CSSProcessor;
  */
 class AssetsCompressor
 {
+
+    /**
+     * Library version
+     */
+    const VERSION = '1.0.0';
+
     /**
      * Holds library configuration loaded from YAML file
      * 
