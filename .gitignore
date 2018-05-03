@@ -1,8 +1,7 @@
 composer.phar
+/test-results/**
+/tests/Unit/AssetsCompressor/.output/*
+!/tests/Unit/AssetsCompressor/.output/.gitkeep
 /vendor/
 /nbproject/**
 composer.lock
-
-# Commit your application's lock file http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
