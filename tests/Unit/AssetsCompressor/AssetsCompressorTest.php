@@ -6,15 +6,15 @@ use AssetsCompressor\AssetsCompressor;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @testdox AssetsCompressor\AssetsCompressor
- * @coversDefaultClass AssetsCompressor\AssetsCompressor
+ * @testdox \AssetsCompressor\AssetsCompressor
+ * @covers \AssetsCompressor\AssetsCompressor
  */
 final class AssetsCompressorTest extends TestCase
 {
 
     /**
      * @testdox Compresion
-     * @covers ::run()
+     * @covers \AssetsCompressor\AssetsCompressor::run
      */
     public function testRun()
     {
@@ -50,6 +50,7 @@ final class AssetsCompressorTest extends TestCase
     /**
      * @testdox Output files validity
      * @depends testRun
+     * @coversNothing
      */
     public function testValiditiy()
     {
@@ -87,7 +88,7 @@ final class AssetsCompressorTest extends TestCase
         $this->assertNotContains('root>C',
             file_get_contents($root.'/stylesheet.css'),
             'Combined contents doesn\'t contain stylesheetC content');
-        
+
         // Check compressed CSS
         $this->assertContains('root>A',
             file_get_contents($root.'/stylesheet.min.'.$stylesheet_hash.'.css'),
@@ -101,7 +102,7 @@ final class AssetsCompressorTest extends TestCase
     }
 
     /**
-     * Clear up tests directory
+     * Cleanup tests directory
      */
     public static function tearDownAfterClass()
     {
@@ -113,7 +114,7 @@ final class AssetsCompressorTest extends TestCase
 
         // Remove output files
         $list = array_merge(glob($root.'/*'), glob(__DIR__.'/busters.json'));
-        foreach( $list AS $file ) {
+        foreach ($list AS $file) {
             unlink($file);
         }
     }
