@@ -1,3 +1,3 @@
 var A = function(){
-    return 'A';
+    return 'AASDAIU9AS767A';
 };

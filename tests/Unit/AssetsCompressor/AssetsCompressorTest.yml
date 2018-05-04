@@ -1,5 +1,5 @@
 /.output/script.js:
-    - /*.js
+    - /.source/*.js
 /.output/stylesheet.css:
-    - /*.css
-    - !/stylesheetB.css
+    - /.source/*.css
+    - !/.source/stylesheetC.css

@@ -1,24 +1,23 @@
 <?php
 
-namespace AssetsCompressor\Tests\Unit\AssetsCompressor;
+namespace tests\Unit\AssetsCompressor;
 
 use AssetsCompressor\AssetsCompressor;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @testdox AssetsCompressor\AssetsCompressor
- * @coversDefaultClass AssetsCompressor
+ * @coversDefaultClass AssetsCompressor\AssetsCompressor
  */
 final class AssetsCompressorTest extends TestCase
 {
 
     /**
-     * @testdox AssetsCompressor\AssetsCompressor
+     * @testdox Compresion
      * @covers ::run()
      */
     public function testRun()
     {
-
         // Run compressor
         $compressor = new AssetsCompressor(__DIR__.'/AssetsCompressorTest.yml');
         $compressor->run();
@@ -27,16 +26,85 @@ final class AssetsCompressorTest extends TestCase
         $root = __DIR__.'/.output';
 
         // Check results
-        $this->assertFileExists($root.'/script.js', 'Deweloperski plik JS istnieje.');
-        $this->assertFileExists($root.'/script.min.js', 'Produkcyjny plik JS istnieje.');
-        $this->assertFileExists($root.'/stylesheet.css', 'Deweloperski plik CSS istnieje.');
-        $this->assertFileExists($root.'/stylesheet.min.css', 'Produkcyjny plik CSS istnieje.');
+        $this->assertFileExists(__DIR__.'/busters.json', 'Hashes file exists.');
+
+        // Load hashes
+        $buff            = file_get_contents(__DIR__.'/busters.json');
+        $hash            = (array) json_decode($buff);
+        $script_hash     = $hash['/.output/script.js'];
+        $stylesheet_hash = $hash['/.output/stylesheet.css'];
+
+        // Check javascript files
+        $this->assertFileExists($root.'/script.js',
+            'Uncompressed JS file exists.');
+        $this->assertFileExists($root.'/script.min.'.$script_hash.'.js',
+            'Compressed and hashed JS file exists.');
+
+        // Check stylesheet files
+        $this->assertFileExists($root.'/stylesheet.css',
+            'Uncompressed CSS file exists.');
+        $this->assertFileExists($root.'/stylesheet.min.'.$stylesheet_hash.'.css',
+            'Compressed and hashed CSS file exists.');
+    }
+
+    /**
+     * @testdox Output files validity
+     * @depends testRun
+     */
+    public function testValiditiy()
+    {
+
+        // Load hashes
+        $buff            = file_get_contents(__DIR__.'/busters.json');
+        $hash            = (array) json_decode($buff);
+        $script_hash     = $hash['/.output/script.js'];
+        $stylesheet_hash = $hash['/.output/stylesheet.css'];
+        $root            = __DIR__.'/.output';
+
+        // Check uncompressed JS
+        $this->assertContains('\'AASDAIU9AS767A\'',
+            file_get_contents($root.'/script.js'),
+            'Combined contents contain scriptA content');
+        $this->assertContains('\'B0720FGN7A7F\'',
+            file_get_contents($root.'/script.js'),
+            'Combined contents contain scriptB content');
+
+        // Check compressed JS
+        $this->assertContains('\'AASDAIU9AS767A\'',
+            file_get_contents($root.'/script.min.'.$script_hash.'.js'),
+            'Compressed contents contain scriptA content');
+        $this->assertContains('\'B0720FGN7A7F\'',
+            file_get_contents($root.'/script.min.'.$script_hash.'.js'),
+            'Compressed contents contain scriptB content');
+
+        // Check uncompressed CSS
+        $this->assertContains('root>A',
+            file_get_contents($root.'/stylesheet.css'),
+            'Combined contents contain stylesheetA content');
+        $this->assertContains('root>B',
+            file_get_contents($root.'/stylesheet.css'),
+            'Combined contents contain stylesheetB content');
+        $this->assertNotContains('root>C',
+            file_get_contents($root.'/stylesheet.css'),
+            'Combined contents doesn\'t contain stylesheetC content');
+        
+        // Check compressed CSS
+        $this->assertContains('root>A',
+            file_get_contents($root.'/stylesheet.min.'.$stylesheet_hash.'.css'),
+            'Compressed contents container stylesheetA content');
+        $this->assertContains('root>B',
+            file_get_contents($root.'/stylesheet.min.'.$stylesheet_hash.'.css'),
+            'Compressed contents container stylesheetB content');
+        $this->assertNotContains('root>C',
+            file_get_contents($root.'/stylesheet.min.'.$stylesheet_hash.'.css'),
+            'Combined contents doesn\'t contain stylesheetC content');
     }
 
     /**
      * Clear up tests directory
      */
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass()
+    {
 
         parent::tearDownAfterClass();
 
@@ -44,11 +112,9 @@ final class AssetsCompressorTest extends TestCase
         $root = __DIR__.'/.output';
 
         // Remove output files
-        $list = glob($root.'/*');
+        $list = array_merge(glob($root.'/*'), glob(__DIR__.'/busters.json'));
         foreach( $list AS $file ) {
             unlink($file);
         }
-
     }
-
 }
