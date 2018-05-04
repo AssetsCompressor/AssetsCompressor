@@ -1,8 +1,11 @@
 <?php
 /**
- * @name    AssetsCompressor/AssetsCompressor
- * @link    https://github.com/AssetsCompressor/AssetsCompressor
- * @author  Artur Stępień
+ * @name        AssetsCompressor/AssetsCompressor
+ * @link        https://github.com/AssetsCompressor/AssetsCompressor
+ * @author      Artur Stępień
+ * @authorEmail artur.stepien@bestproject.pl
+ * @copyrights  Copyrights (C) 2018 Grupa Best Sp. z o.o., all rights reserved.
+ * @license     https://github.com/AssetsCompressor/AssetsCompressor/blob/master/LICENSE MIT
  */
 
 namespace AssetsCompressor;
@@ -63,6 +66,8 @@ class AssetsCompressor
      *
      * @param   string  $config_path    Absolute configuration file path.
      * @param   bool    $hashing        Save minified output files with version tag?
+     *
+     * @codeCoverageIgnore
      */
     public function __construct(string $config_path = '', bool $hashing = true)
     {
@@ -82,6 +87,8 @@ class AssetsCompressor
      * @param   string  $config_file    Absolute configuration file path.
      *
      * @return  self
+     *
+     * @codeCoverageIgnore
      */
     public function loadConfigurationFile(string $config_file): self
     {
@@ -105,6 +112,8 @@ class AssetsCompressor
      * @param   array   $patterns       File patterns (glob() patterns)
      *
      * @return  self
+     *
+     * @codeCoverageIgnore
      */
     public function addEntryPoint(array $output_file, array $patterns): self
     {
@@ -122,6 +131,8 @@ class AssetsCompressor
      * @param   string  $path   Absolute file path
      *
      * @return  self
+     *
+     * @codeCoverageIgnore
      */
     public function setRootDirectory(string $path): self
     {
@@ -136,6 +147,8 @@ class AssetsCompressor
      * @param   string  $path   Absolute file path
      *
      * @return  self
+     *
+     * @codeCoverageIgnore
      */
     public function setHashesFilePath(string $path): self
     {
@@ -150,6 +163,8 @@ class AssetsCompressor
      * @param   bool    $state  Output files hashing state
      *
      * @return  self
+     *
+     * @codeCoverageIgnore
      */
     public function setHashing(bool $state = true): self
     {
@@ -197,7 +212,7 @@ class AssetsCompressor
 
             // If there is no hashes file, place one in root directory
             if (empty($this->path_hashes)) {
-                $this->path_hashes = $this->path_root.'/'.'busters.json';
+                $this->path_hashes = $this->path_root.'/busters.json';
             }
 
             file_put_contents($this->path_hashes, json_encode($this->hashes));
@@ -212,6 +227,8 @@ class AssetsCompressor
      *
      * @param   string          $output_path    Entry point file path
      * @param   array[string]   $patterns
+     *
+     * @codeCoverageIgnore
      */
     protected function processEntry(string $output_path, array $patterns)
     {
@@ -242,7 +259,7 @@ class AssetsCompressor
             if ($this->hashing) {
                 $hash                             = hash('crc32b', $buffer);
                 $path_minified                    .= $hash.'.';
-                $this->hashes[$path_uncompressed] = $hash;
+                $this->hashes[$output_path] = $hash;
             }
 
             // Add file extension
@@ -278,6 +295,8 @@ class AssetsCompressor
      * @param   array   $patterns   Files patterns
      *
      * @return  array
+     *
+     * @codeCoverageIgnore
      */
     protected function buildFilesList(array $patterns): array
     {
