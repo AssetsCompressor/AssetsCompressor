@@ -11,7 +11,7 @@
     stopOnFailure="false"
     syntaxCheck="true"
     verbose="true"
-    defaultTestSuite="Unit"
+    defaultTestSuite="Unit,Feature"
 >
     <logging>
         <log type="junit" target="test-results/junit.xml"/>
