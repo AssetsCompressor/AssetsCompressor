@@ -6,6 +6,7 @@ Combine, compress and version CSS/JS code.
 composer require assets-compressor/assets-compressor
 ```
 
+
 ## Command line usage
 
 ### Execute AssetsCompressor using default configuraton file
@@ -14,6 +15,16 @@ using `assets.yml` or `.assets.yml` configuration file located in project root.
 ```bash
 assets-compressor
 ```
+or
+```bash
+vendor/bin/assets-compressor
+```
+
+### Get help on command line options
+```bash
+assets-compressor --help
+```
+
 
 ## Class usage
 You can also use the class directly. 
@@ -48,8 +59,8 @@ $compressor->addEntryPoint('/assets/css/main.css', [
 
 // Execute compressor
 $compressor->run();
-
 ```
+
 
 ## Sample configuration file
 Configuration is stored in yml file. When using command line application will search
@@ -74,6 +85,7 @@ second level (intended entries) are input files.
 # Ignore somelibrary.js
     - !/resources/components/js/somelibrary.js
 ```
+
 
 ## Files hashes
 By default application generates `busters.json` file that contains file hashes map 
