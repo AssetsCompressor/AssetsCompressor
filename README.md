@@ -10,6 +10,27 @@ using `assets.yml` or `.assets.yml` configuration file located in project root.
 assets-compressor
 ```
 
+### Sample configuration file
+```yml
+# /.assets.yml
+/assets/css/vendor.css
+    - /vendor/select2/select2/dist/select2.css
+    - /vendor/jquery-ui/jquery-ui/css/jquery-ui.css
+    - /resources/components/bootstrap4/dist/css/boostrap.css
+/assets/css/main.css
+    - /resources/components/css/*.css
+# Ignore somelibrary.css
+    - !/resources/components/css/somelibrary.css
+/assets/js/vendor.js
+    - /vendor/select2/select2/dist/select2.js
+    - /vendor/jquery-ui/jquery-ui/css/jquery-ui.js
+    - /resources/components/bootstrap4/dist/js/boostrap.js
+/assets/js/app.js
+    - /resources/components/js/*.js
+# Ignore somelibrary.js
+    - !/resources/components/js/somelibrary.js
+```
+
 ### Using class
 You can also use the class directly. 
 
@@ -23,7 +44,7 @@ $compressor->run();
 
 ```
 
-#### Adding sections manualy
+#### Adding entry points manualy
 ```php
 <?php
 use AssetsCompressor\AssetsCompressor;
