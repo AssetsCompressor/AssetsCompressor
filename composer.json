@@ -56,5 +56,8 @@
         "coverage":[
             "phpunit --coverage-text"
         ]
+    },
+    "branch-alias": {
+        "dev-master": "master"
     }
 }
