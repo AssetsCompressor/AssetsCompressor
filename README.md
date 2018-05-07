@@ -42,7 +42,7 @@ You can also use the class directly.
 <?php
 use AssetsCompressor\AssetsCompressor;
 
-$compressor = new AssetsCompressor('/PATH/TO/CONFIG');
+$compressor = new AssetsCompressor('/PATH/TO/CONFIG/assets.yml');
 $compressor->run();
 
 ```
