@@ -24,7 +24,10 @@
         "phpunit/phpunit": "^7.1"
     },
     "support": {
-        "issues": "https://github.com/AssetsCompressor/AssetsCompressor/issues"
+        "issues": "https://github.com/AssetsCompressor/AssetsCompressor/issues",
+        "docs": "https://github.com/AssetsCompressor/AssetsCompressor#assetscompressor",
+        "source": "https://github.com/AssetsCompressor/AssetsCompressor/blob/master/src/AssetsCompressor.php",
+        "email": "artur.stepien@bestproject.pl"
     },
     "autoload": {
         "psr-4": { "AssetsCompressor\\": "src" },
@@ -40,11 +43,13 @@
     "bin": [
         "bin/assets-compressor"
     ],
+    "prefer-stable": true,
     "config": {
         "platform": {
             "php": "7.1.0"
         },
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "sort-packages": true
     },
     "scripts": {
         "test":[
@@ -58,6 +63,6 @@
         ]
     },
     "branch-alias": {
-        "dev-master": "master"
+        "dev-master": "1.0.x"
     }
 }
