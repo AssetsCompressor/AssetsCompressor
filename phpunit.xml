@@ -15,7 +15,6 @@
 >
     <logging>
         <log type="junit" target="test-results/junit.xml"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
         <log type="coverage-html" target="test-results/coverage" showUncoveredFiles="true"/>
     </logging>
     <testsuites>

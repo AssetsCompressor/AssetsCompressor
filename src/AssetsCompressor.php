@@ -4,7 +4,7 @@
  * @link        https://github.com/AssetsCompressor/AssetsCompressor
  * @author      Artur Stępień
  * @authorEmail artur.stepien@bestproject.pl
- * @copyrights  Copyrights (C) 2018 Grupa Best Sp. z o.o., all rights reserved.
+ * @copyrights  Copyrights (C) 2018 Artur Stępień, all rights reserved.
  * @license     https://github.com/AssetsCompressor/AssetsCompressor/blob/master/LICENSE MIT
  */
 
@@ -12,6 +12,7 @@ namespace AssetsCompressor;
 
 use Exception;
 use MatthiasMullie\Minify\JS as JSProcessor;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use tubalmartin\CssMin\Minifier as CSSProcessor;
 
@@ -60,6 +61,13 @@ class AssetsCompressor
      * @var bool
      */
     protected $hashing = true;
+
+    /**
+     * Console command output.
+     * 
+     * @var OutputInterface
+     */
+    protected $console_output;
 
     /**
      * Create compressor instance.
@@ -222,6 +230,18 @@ class AssetsCompressor
     }
 
     /**
+     * Bind Symfony/Console command output.
+     *
+     * @param   OutputInterface $output Command output.
+     *
+     * @codeCoverageIgnore
+     */
+    public function bindConsoleOutput(OutputInterface $output)
+    {
+        $this->console_output = $output;
+    }
+
+    /**
      * Process a single entry in configuration file (end point file).
      * Directory format: /assets/vender.js for the absolute path, or assets/vendor.js for relative path
      *
@@ -233,6 +253,8 @@ class AssetsCompressor
     protected function processEntry(string $output_path, array $patterns)
     {
 
+        $this->writeConsole('Processing:'."\t".$output_path);
+
         // Extension (file type)
         $ext = strtolower(pathinfo($output_path, PATHINFO_EXTENSION));
 
@@ -241,6 +263,8 @@ class AssetsCompressor
         $buffer       = '';
         foreach ($include_list AS $file) {
             $buffer .= file_get_contents($file).($ext === 'js' ? ';' : '').PHP_EOL;
+
+            $this->writeConsole('- '.$file, OutputInterface::VERBOSITY_VERBOSE);
         }
 
         // Process the buffer
@@ -257,8 +281,8 @@ class AssetsCompressor
 
             // If file shuld be versioned, add a hash
             if ($this->hashing) {
-                $hash                             = hash('crc32b', $buffer);
-                $path_minified                    .= $hash.'.';
+                $hash                       = hash('crc32b', $buffer);
+                $path_minified              .= $hash.'.';
                 $this->hashes[$output_path] = $hash;
             }
 
@@ -279,14 +303,18 @@ class AssetsCompressor
                 // Compress CSS and save the output
                 $output_css = $compressor->run($buffer);
                 file_put_contents($path_minified, $output_css);
+                $this->writeConsole('Processing:'."\t".$path_minified);
 
                 // Process JS
             } elseif ($ext === 'js') {
 
                 // Compress JS file and save to file
                 (new JSProcessor($path_uncompressed))->minify($path_minified);
+                $this->writeConsole('Processing:'."\t".$path_minified);
             }
         }
+
+        $this->writeConsole('', OutputInterface::VERBOSITY_VERBOSE);
     }
 
     /**
@@ -328,5 +356,20 @@ class AssetsCompressor
         $files = array_diff($files, $exclude_list);
 
         return $files;
+    }
+
+    /**
+     * Write message into console command output (used only when application is run from console).
+     * 
+     * @param string    $text       Console text to write
+     * @param   int     $verbosity  Message verbosity level
+     *
+     * @codeCoverageIgnore
+     */
+    private function writeConsole(string $text, int $verbosity = OutputInterface::VERBOSITY_NORMAL)
+    {
+        if (!is_null($this->console_output)) {
+            $this->console_output->writeln($text, $verbosity>0 ? $verbosity : null);
+        }
     }
 }

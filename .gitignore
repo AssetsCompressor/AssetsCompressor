@@ -1,5 +1,7 @@
 composer.phar
 /test-results/**
+/tests/Feature/CommandLineTest/.output/*
+!/tests/Unit/CommandLineTest/.output/.gitkeep
 /tests/Unit/AssetsCompressor/.output/*
 !/tests/Unit/AssetsCompressor/.output/.gitkeep
 /vendor/

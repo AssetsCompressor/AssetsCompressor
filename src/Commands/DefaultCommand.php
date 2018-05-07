@@ -61,9 +61,13 @@ final class DefaultCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('AssetsCompressor v.'.AssetsCompressor::VERSION);
+        $output->writeln('© '.date('Y').' Artur Stępień. All rights reserved.');
+        $output->writeln('License: MIT');
 
         // Create compressor instance
         $this->compressor = new AssetsCompressor();
+        $this->compressor->bindConsoleOutput($output);
 
         // Process configuration option
         $this->processConfig($input, $output);
@@ -76,6 +80,9 @@ final class DefaultCommand extends Command
 
         // Process disable-hashing option
         $this->processDisableHashing($input, $output);
+
+        // Run compressor
+        $this->compressor->run();
     }
 
     /**
@@ -92,9 +99,14 @@ final class DefaultCommand extends Command
         $configuratio_path = $this->getConfigurationFilePath($input);
 
         // If there is no configuration, throw error
+        $output->writeln('');
         if (!file_exists($configuratio_path)) {
-            $output->writeLn('<error>No configuration file provided. Place assets.yml in your projects root or privite its path using --config=assets.yml option.</error>');
+            $output->writeLn('<error>No configuration file provided. Place assets.yml in your projects root or provide its path using --config=assets.yml option.</error>');
+            $output->writeln('');
             exit(1);
+        } else {
+            $output->writeln('Configuration:'."\t".$configuratio_path);
+            $output->writeln('');
         }
 
         // Load configuration to compressor
@@ -158,6 +170,9 @@ final class DefaultCommand extends Command
             // If path exists, set it as root
             if( is_dir($path) ) {
                 $this->compressor->setRootDirectory($path);
+
+                $output->writeln('Path-Root:'."\t".$path, OutputInterface::VERBOSITY_VERBOSE);
+
                 break;
             }
         }
@@ -179,8 +194,9 @@ final class DefaultCommand extends Command
         // Possible root pathes
         $pathes = [
             $input->getOption('path-hash'),
-            $root,
+            $root.'/busters.json',
         ];
+        $pathes = array_filter($pathes);
 
         // Check each path
         foreach( $pathes AS $path ) {
@@ -188,6 +204,8 @@ final class DefaultCommand extends Command
             // If path exists, set it as root
             if( is_dir($path) ) {
                 $this->compressor->setHashesFilePath($path);
+
+                $output->writeln('Path-Hash:'."\t".$path, OutputInterface::VERBOSITY_VERBOSE);
                 break;
             }
         }
@@ -204,7 +222,11 @@ final class DefaultCommand extends Command
     {
 
         // If option i set, disable files hashing
-        if( !is_null($input->getOption('disable-hashing')) ) {
+        if( !is_null($input->getOption('disable-hashing')) AND $input->getOption('disable-hashing')!==false ) {
+
+            $output->writeln('Hashes file:'."\t".'DISABLED', OutputInterface::VERBOSITY_VERBOSE);
+            $output->writeln('', OutputInterface::VERBOSITY_VERBOSE);
+
             $this->compressor->setHashing(false);
         }
         
