@@ -68,6 +68,7 @@ final class DefaultCommand extends Command
         // Create compressor instance
         $this->compressor = new AssetsCompressor();
         $this->compressor->bindConsoleOutput($output);
+        $this->compressor->addEntryPoint($output_file, $patterns);
 
         // Process configuration option
         $this->processConfig($input, $output);
