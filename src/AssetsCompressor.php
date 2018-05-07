@@ -152,7 +152,7 @@ class AssetsCompressor
     /**
      * Set the file path where entry points hashes should be stored.
      *
-     * @param   string  $path   Absolute file path
+     * @param   string  $path   Absolute file path (wg. /busters.json)
      *
      * @return  self
      *

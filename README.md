@@ -34,6 +34,12 @@ second level (intended entries) are input files.
     - !/resources/components/js/somelibrary.js
 ```
 
+### Files hashes
+By default application generates `busters.json` file that contains file hashes map 
+in project root directory (it is a configuration file directory by default). If you 
+want to change where hashes file is stored provide hashes directory using: 
+`AssetsCompressor->setHashesFilePath('/asssets.json')`.
+
 ### Using class
 You can also use the class directly. 
 
