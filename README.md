@@ -11,6 +11,9 @@ assets-compressor
 ```
 
 ### Sample configuration file
+Configuration is stored in yml file. When using command line application will search
+for it in `/assets.yml` and `/.assets.yml`. First level entries are entry points (output files),
+second level (intended entries) are input files.
 ```yml
 # /.assets.yml
 /assets/css/vendor.css
